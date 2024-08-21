@@ -1,0 +1,15 @@
+{
+  "name": "playwright_automation_script_loader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "type": "module",
+  "author": "XY0797",
+  "license": "GPLv3",
+  "description": "Playwright自动化脚本加载器",
+  "dependencies": {
+    "playwright": "^1.46.1"
+  }
+}

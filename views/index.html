@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>插件列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        #plugin-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .plugin-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            white-space: normal;
+            max-width: calc(100% - 48px);
+        }
+
+        .plugin-card img {
+            max-width: 64px;
+            max-height: 64px;
+            margin-bottom: 10px;
+        }
+
+        .plugin-card h2 {
+            margin: 0 0 10px;
+            font-size: 1.5em;
+        }
+
+        .plugin-card p {
+            margin: 0 0 10px;
+            color: #666;
+            overflow-wrap: break-word;
+        }
+
+        .plugin-card button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
+        .plugin-card button:hover {
+            background-color: #0056b3;
+        }
+
+        #exit-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff4d4d;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="exit-button" onclick="ExitProgm()">退出</button>
+    <h1>Playwright自动化脚本加载器</h1>
+    <h2>插件列表</h2>
+    <div id="plugin-list"></div>
+
+    <script>
+        // 退出程序
+        function ExitProgm() {
+            document.body.innerHTML = '<h1 id="NowExit">正在退出...</h1>';
+        }
+
+        // 向插件加载器发送消息
+        function sendMessage2Loader(data) {
+            console.log(JSON.stringify(data));
+        }
+
+        // 处理启动按钮点击事件
+        function handleButtonClick(event) {
+            const name = event.target.dataset.name;
+            const folderName = event.target.dataset.folderName;
+            const settingHtmlFileURL = event.target.dataset.settingHtmlFileURL;
+            sendMessage2Loader({
+                type: 'loadPlugin',
+                name,
+                folderName,
+                settingHtmlFileURL:
+                    ((settingHtmlFileURL === 'null') ? null : settingHtmlFileURL)
+            });
+        }
+
+        // 创建插件卡片
+        function createPluginCard(plugin) {
+            const card = document.createElement('div');
+            card.className = 'plugin-card';
+
+            const img = document.createElement('img');
+            img.src = plugin.iconFileURL;
+            card.appendChild(img);
+
+            const h2 = document.createElement('h2');
+            h2.textContent = plugin.name;
+            card.appendChild(h2);
+
+            const p1 = document.createElement('p');
+            p1.textContent = plugin.description;
+            card.appendChild(p1);
+
+            const p2 = document.createElement('p');
+            p2.textContent = `作者: ${plugin.author}, 版本: ${plugin.version}`;
+            card.appendChild(p2);
+
+            const button = document.createElement('button');
+            button.textContent = '启动';
+            button.dataset.name = plugin.name;
+            button.dataset.folderName = plugin.folderName;
+            button.dataset.settingHtmlFileURL = plugin.settingHtmlFileURL;
+            button.onclick = handleButtonClick;
+            card.appendChild(button);
+
+            return card;
+        }
+
+        // 监听来自插件加载器的消息
+        window.addEventListener('message', ({ data }) => {
+            if (data?.type === 'initialize') {
+                // 动态生成插件列表
+                const pluginList = document.getElementById('plugin-list');
+                data.plugins.forEach(plugin => {
+                    const card = createPluginCard(plugin);
+                    pluginList.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
