@@ -64,10 +64,15 @@ npm install
 `index.js`必须提供如下格式的入口函数：
 
 ```js
-export default async function main(page, context, setting) {
-    // page是创建好的新页面，context是浏览器上下文对象
-    // 如果有设置文件，setting是一个保存了插件设置信息的对象
-    // 如果没有设置文件，setting为null
+/**
+ * 主函数，用于执行Playwright自动化脚本
+ * @param {import('playwright').Page} page - 创建好的新页面
+ * @param {import('playwright').BrowserContext} context - 浏览器上下文对象
+ * @param {Object|null} setting - 保存了插件设置信息的对象，如果没有设置文件则为null
+ * @param {string} pluginsFolderPath - 插件目录的绝对路径，例如：R:\Playwright自动化脚本加载器\plugins\百度登录插件
+ * 注意：插件内代码必须用pluginsFolderPath拼接绝对路径，插件内使用相对路径会错误！
+ */
+export default async function main(page, context, setting, pluginsFolderPath) {
     // 下面可自由编写业务逻辑
     await page.goto('https://xxxx'); // 跳转网址示例
 }

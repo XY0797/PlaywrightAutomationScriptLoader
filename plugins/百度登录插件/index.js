@@ -1,4 +1,4 @@
-export default async function main(page, context, setting) {
+export default async function main(page, context, setting, pluginsFolderPath) {
     await page.goto('https://www.baidu.com/');
     await page.getByRole('link', { name: '登录' }).click();
     await page.getByPlaceholder('手机号/用户名/邮箱').click();

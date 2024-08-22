@@ -1,6 +1,7 @@
 import { startBrowser } from './src/starter.js';
 import { scanPlugins } from './src/pluginsScanner.js';
 import fs from 'fs/promises';
+import path from 'path';
 
 // 发送消息给页面
 async function sendMessage2Page(page, type, data) {
@@ -102,7 +103,7 @@ async function loadPlugin(pluginName, pluginFolderName, pluginSettingHtmlFileURL
   const plugin = await import(`./plugins/${pluginFolderName}/index.js`);
 
   // 调用插件中的 main 函数
-  await plugin.default(page, context, settingData);
+  await plugin.default(page, context, settingData, path.resolve(`./plugins/${pluginFolderName}`));
 
   // 插件结束运行
   console.log(`插件结束运行 ${pluginName}`);
